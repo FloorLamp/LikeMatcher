@@ -1,0 +1,291 @@
+body {
+	font-family: sans-serif;
+}
+h1#welcome {
+    margin: 10px 0 10px;
+    font-size: 1.5em;
+}
+div#recommendedList {
+    margin: 10px;
+}
+div.main {
+	width: 50%;
+	float: left;
+}
+h1#recommended {
+	margin: 10px 10px 10px 0;
+	padding: 0px;
+	font-size: 1.3em;
+	display: inline;
+}
+ul {
+	margin: 0px;
+	padding: 0px;
+	list-style-type: none;
+}
+ul li {
+	margin: 0px;
+	padding: 0px;
+}
+form#refreshForm {
+    display: inline
+}
+input#refreshDataLink {
+    background-color: white;
+    color: rgb(59, 89, 152);
+    text-decoration: underline;
+    border: 0 none;
+    cursor: pointer;
+    margin: 10px 5px;
+}
+div.artistBox {
+	float: left;
+	width: 100px;
+	margin: 1px;
+	padding: 6px;
+}
+a.artistLink {
+	cursor: pointer;
+	color: rgb(59, 89, 152);
+	font-size: 0.8em;
+	text-decoration: none;
+}
+div.artistBox:hover {
+	background-color: #d3d3ff;
+}
+img.artistPic {
+	width: 100px;
+	height: 100px;
+}
+div.artistName {
+	text-align: center;
+	height: 2.3em;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+/* Friends */
+div.friends {
+    float: right;
+    width: 50%;
+}
+div.friendBox {
+	line-height: 50px;
+	margin: 8px;
+}
+h1.friendsTitle {
+	font-size: 1.3em;
+	margin: 10px 0;
+}
+img.friendPic {
+	float: left;
+	width: 50px;
+	height: 50px;
+}
+span.friendName {
+	margin-left: 5px;
+	vertical-align: middle;
+	font-size: 0.9em;
+}
+
+/* Search */
+div.artistSearch {
+    float: right;
+    width: 50%;
+}
+h2 {
+    font-size: 1em;
+    font-weight: normal;
+    margin: 0;
+}
+div.search {
+    margin: 9px 0;
+}
+input.searchText {
+    border: 0 none;
+    padding: 2px 5px;
+    width: 262px;
+}
+div.searchBar {
+    border: 1px solid;
+    width: 300px;
+    float: left;
+}
+input.searchButton {
+    background-color: #FFFFFF;
+    background-image: url("https://s-static.ak.fbcdn.net/rsrc.php/v1/ys/r/0VDksn8o5BR.png");
+    background-position: -274px -502px;
+    background-repeat: no-repeat;
+    border: 0 none;
+    cursor: pointer;
+    height: 19px;
+    padding: 0;
+    width: 22px;
+}
+input.button {
+    background-color: #DDDDDD;
+    border: 1px solid;
+    font-size: 0.8em;
+    height: 23px;
+    margin: 0 9px;
+    padding: 0 2px;
+}
+div.results {
+    margin: 2px 0;
+    padding: 2px;
+    font-size: 0.75em;
+    width: 400px;
+    overflow: hidden;
+}
+div.result {
+    height: 54px;
+}
+div.result:hover {
+    background-color: #6d84b4;
+    color: #ffffff;
+}
+div.resultSelected {
+    background-color: #4967a4;
+    color: #ffffff;
+}
+img.resultImg {
+	float: left;
+    width: 50px;
+    height: 50px;
+    padding: 2px;
+    cursor: pointer;
+}
+div.resultText {
+    padding: 4px 3px 0;
+    cursor: pointer;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    cursor: pointer;
+}
+
+/* ------------------------------------------ */
+
+/* =header
+--------------------------------------------- */
+header {
+  border-left: 1px solid #b3b3b3;
+  border-right: 1px solid #b3b3b3;
+  border-top: 1px solid #b3b3b3;
+  font-size: 11px;
+  padding: 24px 18px;
+}
+
+header h1 {
+  border-bottom: 2px solid #e9e9e9;
+  margin: 0 0 9px;
+  padding: 2px 0 8px;
+}
+
+header #picture + div {
+  margin-left: 82px;
+}
+
+header #picture {
+  background-position: center 25%;
+  background-repeat: no-repeat;
+  background-size: 64px;
+  float: left;
+  margin-right: 18px;
+  width: 64px;
+  height: 64px;
+  overflow: hidden;
+}
+
+header .tagline {
+  float: left;
+}
+
+#share-app {
+  float: right;
+  width: 344px;
+}
+
+#share-app ul {
+  float: right;
+}
+
+#share-app p {
+  float: left;
+  margin-left: 8px;
+}
+
+#share-app li {
+  float: left;
+  list-style: none;
+  margin-left: 8px;
+}
+/* ------------------------------------------ */
+
+/* =buttons
+--------------------------------------------- */
+.facebook-button:link, .facebook-button:visited {
+  background-color: #eee;
+  background-image: -moz-linear-gradient(top, #fdfdfd, #eaebeb);
+  background-image: -ms-linear-gradient(top, #fdfdfd, #eaebeb);
+  background-image: -o-linear-gradient(top, #fdfdfd, #eaebeb));
+  background-image: -webkit-gradient(linear, left top, left bottom, from(#fdfdfd), to(#eaebeb));
+  background-image: -webkit-linear-gradient(top, #fdfdfd, #eaebeb);
+  background-image: linear-gradient(top, #fdfdfd, #eaebeb);
+  border: 1px solid #a9a9a9;
+  -moz-box-shadow: 0 1px 0 rgba(0, 0, 0, .1);
+  -webkit-box-shadow: 0 1px 0 rgba(0, 0, 0, .1);
+  box-shadow: 0 1px 0 rgba(0, 0, 0, .1);
+  color: #4f4f4f;
+  display: -moz-inline-box;
+  display: inline-block;
+  font-family: 'Lucida Grande', Tahoma, Verdana, Arial, sans-serif;
+  font-size: 11px;
+  font-weight: bold;
+  line-height: 20px;
+  margin: 0;
+  outline: none;
+  text-decoration: none;
+  text-shadow: 0 1px 1px rgba(255, 255, 255, .33);
+}
+
+.facebook-button span {
+  background: url("images/sprites.png") no-repeat;
+  padding: 0 7px 0 21px;
+}
+
+.facebook-button .speech-bubble {
+  background-position: 6px 3px;
+}
+
+.facebook-button .plus {
+  background-position: 6px -17px;
+}
+
+.facebook-button .apprequests {
+  background-position: 6px -37px;
+}
+
+.button:link, .button:visited {
+  background-color: #7a90c0;
+  background-image: -moz-linear-gradient(top, #97afe2, #6073a1);
+  background-image: -ms-linear-gradient(top, #97afe2, #6073a1);
+  background-image: -o-linear-gradient(top, #97afe2, #6073a1);
+  background-image: -webkit-gradient(linear, left top, left bottom, from(#97afe2), to(#6073a1));
+  background-image: -webkit-linear-gradient(top, #97afe2, #6073a1);
+  background-image: linear-gradient(top, #97afe2, #6073a1);
+  border: none;
+  -moz-border-radius: 30px;
+  -webkit-border-radius: 30px;
+  border-radius: 30px;
+  -moz-box-shadow: 0 1px 1px rgba(0, 0, 0, .5), 0 1px 1px rgba(255, 255, 255, .33) inset;
+  -webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, .5), 0 1px 1px rgba(255, 255, 255, .33) inset;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, .5), 0 1px 1px rgba(255, 255, 255, .33) inset;
+  color: #1d222c;
+  display: inline-block;
+  font: bold 14px "Helvetica Neue", Helvetica, Arial, Geneva, sans-serif;
+  line-height: 32px;
+  padding: 0 25px;
+  text-decoration: none;
+  text-shadow: 0 1px 1px rgba(255, 255, 255, .2);
+}
