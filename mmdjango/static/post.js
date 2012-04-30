@@ -125,9 +125,9 @@ $(function(){
 
 /// SEND RECOMMENDATION
 $(function(){
-    $('input.postButton').click(function() {
+    $('input.recButton').click(function() {
         var button = $(this),
-            searchDiv = button.parent().siblings('div.search'),
+            searchDiv = button.parents('div.friendBox').siblings('div.search'),
             resultsDiv = searchDiv.siblings('div.results');
         
         if (button.val() == 'Recommend music') {
@@ -135,7 +135,7 @@ $(function(){
             
             // Add search form if it doesn't exist
             if (searchDiv.length == 0) {
-                button.parent().parent().append(
+                button.parents('li').append(
                 '<div class="search">' + 
                     '<div class="searchBar">' +
                         '<input type="text" class="searchText"></input>' +
@@ -144,7 +144,7 @@ $(function(){
                 '</div>' +
                 '<div class="results"></div>');
                 
-                searchDiv = button.parent().siblings('div.search');
+                searchDiv = button.parents('div.friendBox').siblings('div.search');
                 resultsDiv = searchDiv.siblings('div.results');
             } else {
                 searchDiv.show();
@@ -186,5 +186,13 @@ $(function(){
             searchDiv.hide();
             resultsDiv.hide();
         }
+    });
+});
+
+// SHOW COMMON LIST
+$(function() {
+    $('input.showCommonButton').on('click', function() {
+        var button = $(this),
+            commonDiv = button.parents('div.friendBox').siblings('div.friendCommon').slideToggle('fast');
     });
 });

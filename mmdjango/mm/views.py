@@ -2,16 +2,13 @@ from django.http import HttpResponse
 from django.shortcuts import render_to_response, redirect
 from django.template import RequestContext
 from mm.models import FBUser
+
 import ast
 import requests
-import base64
 import os
 import os.path
 import urllib
-import hmac
 import json
-import hashlib
-from base64 import urlsafe_b64decode, urlsafe_b64encode
 
 FB_APP_ID = '274847765934546'
 FB_APP_SECRET = '888949406beb1a60ce62963d679678f9'
@@ -33,20 +30,10 @@ def oauth_login_url(request):
     print "LOGIN URL: " + fb_login_uri
     return fb_login_uri
 
-
 def simple_dict_serialisation(params):
     return "&".join(map(lambda k: "%s=%s" % (k, params[k]), params.keys()))
 
-
-def base64_url_encode(data):
-    return base64.urlsafe_b64encode(data).rstrip('=')
-
-
-def fbapi_get_string(path,
-    domain=u'graph', params=None, access_token=None,
-    encode_func=urllib.urlencode):
-    """Make an API call"""
-
+def fbapi_get_string(path, domain=u'graph', params=None, access_token=None, encode_func=urllib.urlencode):
     if not params:
         params = {}
     params[u'method'] = u'GET'
@@ -64,7 +51,6 @@ def fbapi_get_string(path,
 
     return result
 
-
 def fbapi_auth(code, request):
     params = {'client_id': FB_APP_ID,
               'redirect_uri': get_code_url(request),
@@ -81,7 +67,6 @@ def fbapi_auth(code, request):
         result_dict[key] = value
     return (result_dict["access_token"], result_dict["expires"])
 
-
 def fbapi_get_application_access_token(id):
     token = fbapi_get_string(
         path=u"/oauth/access_token",
@@ -93,58 +78,6 @@ def fbapi_get_application_access_token(id):
     if not str(id) in token:
         print 'Token mismatch: %s not in %s' % (id, token)
     return token
-
-#def get_token(request):
-
-#    if request.GET.get('code', None):
-#        return fbapi_auth(request.GET.get('code'))[0]
-#    else:
-#	    return None
-
-#    cookie_key = 'fbsr_{0}'.format(FB_APP_ID)
-#    if cookie_key in request.session.keys():
-
-#        c = request.session.get(cookie_key)
-#        encoded_data = c.split('.', 2)
-
-#        sig = encoded_data[0]
-#        data = json.loads(urlsafe_b64decode(str(encoded_data[1]) + '=='))
-
-#        if not data['algorithm'].upper() == 'HMAC-SHA256':
-#            raise ValueError('unknown algorithm {0}'.format(data['algorithm']))
-
-#        h = hmac.new(FB_APP_SECRET, digestmod=hashlib.sha256)
-#        h.update(encoded_data[1])
-#        expected_sig = urlsafe_b64encode(h.digest()).replace('=', '')
-
-#        if sig != expected_sig:
-#            raise ValueError('bad signature')
-
-#        code =  data['code']
-
-#        params = {
-#            'client_id': FB_APP_ID,
-#            'client_secret': FB_APP_SECRET,
-#            'redirect_uri': '',
-#            'code': data['code']
-#        }
-
-#        from urlparse import parse_qs
-#        r = requests.get('https://graph.facebook.com/oauth/access_token', params=params)
-#        token = parse_qs(r.content).get('access_token')
-
-#        return token
-
-def fql(fql, token, args=None):
-    if not args:
-        args = {}
-
-    args["query"], args["format"], args["access_token"] = fql, "json", token
-
-    url = "https://api.facebook.com/method/fql.query"
-
-    r = requests.get(url, params=args)
-    return json.loads(r.content)
 
 def fb_call(call, args=None):
     url = "https://graph.facebook.com/{0}".format(call)
@@ -169,12 +102,6 @@ def get_code(request):
     return redirect(get_home(request))
 
 def index(request):
-#    if not access_token:
-#        get_token(request)
-
-#    channel_url = url_for('get_channel', _external=True)
-#    channel_url = channel_url.replace('http:', '').replace('https:', '')
-
     access_token = request.session.get(COOKIE_TOKEN, None)
     
     if access_token:
@@ -286,12 +213,6 @@ def index(request):
     else:
         return redirect(oauth_login_url(request))
 
-def get_channel():
-    return render_to_response('channel.html')
-
-def close():
-    return render_to_response('close.html')
-
 # API for searching friends for artist
 def api(request):
     access_token = request.session.get(COOKIE_TOKEN, None)
@@ -336,7 +257,6 @@ def api(request):
         
         # Add unknown picture and link
         for x in results:
-            print results[x]
             if len(results[x]) <= 2:
                 results[x].extend([question_mark_picture, ''])
         
