@@ -1,6 +1,12 @@
 body {
 	font-family: sans-serif;
 }
+.hidden {
+    display: none;
+}
+.link {
+    color: #3B5998;
+}
 h1#welcome {
     margin: 10px 0 10px;
     font-size: 1.5em;
@@ -32,7 +38,6 @@ form#refreshForm {
 }
 input#refreshDataLink {
     background-color: white;
-    color: rgb(59, 89, 152);
     text-decoration: underline;
     border: 0 none;
     cursor: pointer;
@@ -46,7 +51,6 @@ div.artistBox {
 }
 a.artistLink {
 	cursor: pointer;
-	color: rgb(59, 89, 152);
 	font-size: 0.8em;
 	text-decoration: none;
 }
@@ -71,6 +75,7 @@ div.friends {
 }
 div.friendBox {
 	padding: 8px 0;
+    clear: both;
 }
 h1.friendsTitle {
 	font-size: 1.3em;
@@ -89,7 +94,6 @@ div.friendText input {
     margin: 0 5px;
     border: 0 none;
     background-color: white;
-    color: rgb(59, 89, 152);
     text-decoration: underline;
     cursor: pointer;
     font-size: 0.75em;
@@ -100,11 +104,20 @@ b.friendName {
 	font-size: 0.9em;
 	font-weight: normal;
 }
-
 div.friendCommon {
     display: none;
     font-size: 0.75em;
     padding: 5px;
+}
+div#showAllFriends {
+    margin: 10px 0 25px;
+    padding: 15px 0;
+    width: 305px;
+    cursor: pointer;
+    text-align: center;
+}
+div#showAllFriends:hover {
+	background-color: #d3d3ff;
 }
 
 /* Search */

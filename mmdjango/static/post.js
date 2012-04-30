@@ -196,3 +196,12 @@ $(function() {
             commonDiv = button.parents('div.friendBox').siblings('div.friendCommon').slideToggle('fast');
     });
 });
+
+// SHOW ALL FRIENDS
+$(function() {
+    var showAllButton = $('div#showAllFriends');
+    showAllButton.on('click', function() {
+        $('li.hidden').removeClass('hidden');
+        showAllButton.hide();
+    });
+});
