@@ -268,6 +268,11 @@ def index(request):
                 recommended[musicData[m]['name']].extend(
                 [musicData[m]['picture'] if musicData[m].has_key('picture') else question_mark_picture, musicData[m]['link']])
                 
+            # Add unknown picture and link
+            for x in recommended:
+                if len(recommended[x]) <= 2:
+                    results[x].extend([question_mark_picture, ''])
+                
             # Sort recommended artist list by rating
             recommendedList = sorted(recommended.iteritems(), key=lambda x: x[1][0], reverse=True)
             friendsList = sorted(friends.iteritems(), key=lambda x: x[1][2], reverse=True)
@@ -325,8 +330,16 @@ def api(request):
         # Add picture and link to resulting artists
         musicData = fb_call('?ids=' + musicQuery[:-1], args={'fields': 'name, picture, link', 'access_token': access_token})
         for m in musicData:
-            results[musicData[m]['name']].extend(
-                [musicData[m]['picture'] if musicData[m].has_key('picture') else question_mark_picture, musicData[m]['link']])
+            if results.has_key(musicData[m]['name']):
+                results[musicData[m]['name']].extend(
+                    [musicData[m]['picture'] if musicData[m].has_key('picture') else question_mark_picture, musicData[m]['link']])
+        
+        # Add unknown picture and link
+        for x in results:
+            print results[x]
+            if len(results[x]) <= 2:
+                results[x].extend([question_mark_picture, ''])
+        
         results = sorted(results.iteritems(), key=lambda x: x[1][0], reverse=True)
         
         return HttpResponse(json.dumps(results), mimetype='application/json')

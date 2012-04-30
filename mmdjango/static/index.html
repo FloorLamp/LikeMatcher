@@ -6,6 +6,7 @@
     {% if not haveMusic %}
     <p>You don't have any music likes! You should like some artists for personalized recommendations.</p>
     {% endif %}
+    <p id="noScript">You do not have Javascript enabled. Some features cannot be used without Javascript.</p>
 </div>
 {% endblock %}
 
@@ -39,7 +40,6 @@
             <input type="text" id="artistSearchText" class="searchText"></input>
             <input type="button" id="artistSearchButton" class="searchButton"></input>
         </div>
-        <input type="button" id="findSimilarButton" class="button" value="Search friends"></input>
     </div>
     <div id="artistSearchResults" class="results"></div>
 </div>

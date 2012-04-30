@@ -1,11 +1,10 @@
 // Do fb search for input text
-function doSearch(toSearch, resultsDiv) {
+function doSearch(toSearch, resultsDiv, type, onclickFunction) {
     if ($.trim(toSearch).length == 0) {
         resultsDiv.html('').hide();
-        return null;
+        return;
     }
 
-    var data = {name: null, picture: null, link: null};
     FB.api('/search', {
         q: toSearch,
         type: 'page',
@@ -16,7 +15,7 @@ function doSearch(toSearch, resultsDiv) {
         resultsDiv.html('').show().css('border', '1px solid black');
         $.each(response.data, function(k, v) {
             resultsDiv.append(
-                '<div class="result" data-name="' + v.name + '" data-link="' + v.link + '">' + 
+                '<div class="result ' + type + '" data-name="' + v.name + '" data-link="' + v.link + '">' + 
                     '<img class="resultImg" src="' + v.picture + '"></img>' +
                     '<div class="resultText"><b>' + v.name + '</b><br>' + 
                     '' + v.category + '<br>' +
@@ -24,18 +23,13 @@ function doSearch(toSearch, resultsDiv) {
                 '</div>');
         });
         
-        // Select result
-        $('div.result').on('click', function() {
-            var selected = $(this);
-            selected.siblings().removeClass('resultSelected').addClass('result');
-            selected.addClass('resultSelected');
-            data.picture = selected.children('img.resultImg').attr('src');
-            data.name = selected.data('name');
-            data.link = selected.data('link');
-        });
+        $('div.'+type).on('click', onclickFunction);
     });
-    return data;
 }
+
+$(function(){
+    $('p#noScript').hide();
+});
     
 /// SINGLE ARTIST SEARCH
 $(function(){
@@ -43,7 +37,6 @@ $(function(){
         doneTypingTime = 800, 
         SLIDE_TIME = 800,
         searchText = $('input#artistSearchText'),
-        findSimilarButton = $('input#findSimilarButton'),
         data = null,
         resultsDiv = $('div#artistSearchResults'),
         resultsList = $('ul#resultsList'),
@@ -65,7 +58,59 @@ $(function(){
     });
         
     function getSearchDataSingle() {
-        data = doSearch(searchText.val(), resultsDiv);
+        doSearch(searchText.val(), resultsDiv, 'find', searchArtistFunction);
+        
+        // Select result and finds similar
+        function searchArtistFunction() {
+            var selected = $(this),
+                name = selected.data('name');
+            selected.siblings().removeClass('resultSelected').addClass('result');
+            selected.addClass('resultSelected');
+    //        data.picture = selected.children('img.resultImg').attr('src');
+    //        data.name = selected.data('name');
+    //        data.link = selected.data('link');
+            if (searchText.val) {
+                var relatedArtists = $.ajax({
+                    url: '/api',
+                    dataType: 'json',
+                    data: { q: name }
+                });
+                
+                relatedArtists.then(function(response) {
+                    resultsList.html('');
+                    
+                    if (response.length > 0) {
+                        $.each(response, function(k, artist) {
+                            resultsList.append(
+                                '<li>' +
+                                    '<div class="artistBox">' +
+			                            '<a class="artistLink" href="' + artist[1][3] + '">' +
+				                        '<img class="artistPic" src="' + artist[1][2] + '">' +
+				                        '<div class="artistName">' +
+			                                artist[0] +
+			                            '</div>' +
+			                            '</a>' +
+		                            '</div>' +
+                                '</li>'
+                            );
+                        });
+                    } else {
+                        resultsList.append(
+                            '<li>' +
+                                '<p class="noResults">' +
+                                    '<b>' + name + '</b> was not found in your friends music.' +
+                                '</p>' +
+                            '</li>'
+                        );
+                    }
+                    
+                    recommendedList.slideUp(SLIDE_TIME);
+                    resultsList.delay(SLIDE_TIME).slideDown(SLIDE_TIME);
+                    refreshLink.val('Clear').attr('title', 'Clear search results');
+                    recommendHeader.text('Search results');
+                });
+            }
+        }
     }
     
     // Does search after 800 ms or on button click
@@ -76,50 +121,6 @@ $(function(){
             typingTimer = setTimeout(getSearchDataSingle, doneTypingTime);
         }
     });
-    
-    findSimilarButton.on('click', function() {
-        if (searchText.val) {
-            var relatedArtists = $.ajax({
-                url: '/api',
-                dataType: 'json',
-                data: { q: data.name }
-            });
-            
-            relatedArtists.then(function(response) {
-                resultsList.html('');
-                
-                if (response.length > 0) {
-                    $.each(response, function(k, artist) {
-                        resultsList.append(
-                            '<li>' +
-                                '<div class="artistBox">' +
-			                        '<a class="artistLink" href="' + artist[1][3] + '">' +
-				                    '<img class="artistPic" src="' + artist[1][2] + '">' +
-				                    '<div class="artistName">' +
-			                            artist[0] +
-			                        '</div>' +
-			                        '</a>' +
-		                        '</div>' +
-                            '</li>'
-                        );
-                    });
-                } else {
-                    resultsList.append(
-                        '<li>' +
-                            '<p class="noResults">' +
-                                '<b>' + data.name + '</b> was not found in your friends music.' +
-                            '</p>' +
-                        '</li>'
-                    );
-                }
-                
-                recommendedList.slideUp(SLIDE_TIME);
-                resultsList.delay(SLIDE_TIME).slideDown(SLIDE_TIME);
-                refreshLink.val('Clear').attr('title', 'Clear search results');
-                recommendHeader.text('Search results');
-            });
-        }
-    });
 });
 
 /// SEND RECOMMENDATION
@@ -127,8 +128,7 @@ $(function(){
     $('input.postButton').click(function() {
         var button = $(this),
             searchDiv = button.parent().siblings('div.search'),
-            resultsDiv = searchDiv.siblings('div.results'),
-            sendPostButton = searchDiv.children('input.sendPost');
+            resultsDiv = searchDiv.siblings('div.results');
         
         if (button.val() == 'Recommend music') {
             button.val('Cancel');
@@ -141,12 +141,11 @@ $(function(){
                         '<input type="text" class="searchText"></input>' +
                         '<input type="button" class="searchButton"></input>' +
                     '</div>' +
-                    '<input type="button" class="sendPost button" value="Send"></input></div>' +
+                '</div>' +
                 '<div class="results"></div>');
                 
                 searchDiv = button.parent().siblings('div.search');
                 resultsDiv = searchDiv.siblings('div.results');
-                sendPostButton = searchDiv.children('input.sendPost');
             } else {
                 searchDiv.show();
             }
@@ -154,11 +153,23 @@ $(function(){
             // Does search after 800 ms or on button click
             var typingTimer,
                 doneTypingTime = 800, 
-                searchText = searchDiv.find('input.searchText'),
-                data = null;
+                searchText = searchDiv.find('input.searchText');
                 
             function getSearchData() {
-                data = doSearch(searchText.val(), resultsDiv);
+                doSearch(searchText.val(), resultsDiv, 'rec', recommendFunction);
+                
+                // Post to wall
+                function recommendFunction() {
+                    if (searchText.val) {
+                        FB.ui({
+                            method: 'feed',
+                            to: button.data('id'),
+                            display: 'popup',
+                            link: $(this).data('link')
+                        }, function(response) {
+                        });
+                    }
+                }
             }
             
             searchDiv.find('input.searchButton').on('click', getSearchData);
@@ -166,22 +177,6 @@ $(function(){
                 clearTimeout(typingTimer);
                 if (searchText.val) {
                     typingTimer = setTimeout(getSearchData, doneTypingTime);
-                }
-            });
-            
-            // Post to wall
-            sendPostButton.on('click', function() {
-                if (data != null) {
-                    console.log(data.link)
-                    FB.ui({
-                        method: 'feed',
-                        to: button.data('id'),
-//                        message: 'I recommend you...',
-                        display: 'popup',
-                        link: data.link
-                    }, function(response) {
-                        console.log(response);  
-                    });
                 }
             });
             

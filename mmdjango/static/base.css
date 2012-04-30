@@ -98,18 +98,16 @@ h2 {
     font-weight: normal;
     margin: 0;
 }
-div.search {
-    margin: 9px 0;
+div.searchBar {
+    margin: 9px 0 5px;
+    border: 1px solid;
+    width: 304px;
+    float: left;
 }
 input.searchText {
     border: 0 none;
     padding: 2px 5px;
-    width: 262px;
-}
-div.searchBar {
-    border: 1px solid;
-    width: 300px;
-    float: left;
+    width: 266px;
 }
 input.searchButton {
     background-color: #FFFFFF;
@@ -134,7 +132,8 @@ div.results {
     margin: 2px 0;
     padding: 2px;
     font-size: 0.75em;
-    width: 400px;
+    width: 300px;
+    clear: both;
     overflow: hidden;
 }
 div.result {
