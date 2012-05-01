@@ -44,7 +44,14 @@
         {% endfor %}
     </ul>
     {% else %}
-    <p>Either your friends do not have any {{category}}, or they have too many. Try a different category.</p>
+    <p id="none">
+        No results were found. This could be due to several things:
+        <ul>
+            <li>The Facebook API is busy. Try clicking refresh above.</li>
+            <li>You have too many friends, or they have too many {{category}} likes.</li>
+            <li>Your friends do not have any {{category}} likes.</li>
+        </ul>
+    </p>
     {% endif %}
     <ul id="resultsList"></ul>
 </div>

@@ -23,6 +23,7 @@ urlpatterns = patterns('',
 	url(r'^books$', 'mm.views.books'),
 	url(r'^interests$', 'mm.views.interests'),
 	url(r'^activities$', 'mm.views.activities'),
+	url(r'^likes$', 'mm.views.likes'),
 	
 	url(r'^getcode$', 'mm.views.get_code'),
 	

@@ -27,7 +27,9 @@ function doSearch(toSearch, resultsDiv, type, onclickFunction) {
     });
 }
 
+/// MISC
 $(function(){
+    // Show noscript message
     $('p#noScript').hide();
 });
     

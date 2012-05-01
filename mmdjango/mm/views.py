@@ -23,14 +23,14 @@ COOKIE_FBID = 'fbapp' + FB_APP_ID + 'fbid'
 question_mark_picture = 'http://local2social.com/wp-content/uploads/2011/02/questionmark.jpg'
 
 # list of categories: [(display name, category name, url)]
-categoryList = [('All Likes', 'likes', '/'), 
-                ('Music', 'music', 'music'), 
+categoryList = [('Music', 'music', 'music'), 
                 ('Movies', 'movies', 'movies'), 
                 ('TV', 'television', 'tv'), 
                 ('Books', 'books', 'books'), 
                 ('Games', 'games', 'games'), 
                 ('Interests', 'interests', 'interests'), 
-                ('Activities', 'activities', 'activities')]
+                ('Activities', 'activities', 'activities'),
+                ('All Likes', 'likes', 'likes')]
 
 def oauth_login_url(request):
     fb_login_uri = ("https://www.facebook.com/dialog/oauth"
@@ -123,8 +123,10 @@ def interests(request):
     return index(request, 'interests')
 def activities(request):
     return index(request, 'activities')
+def likes(request):
+    return index(request, 'likes')
 
-def index(request, category='likes'):
+def index(request, category='music'):
     access_token = request.session.get(COOKIE_TOKEN, None)
     
     if access_token:
@@ -189,7 +191,7 @@ def index(request, category='likes'):
                         friendCategoryData = user.likes_friend_data
                         recommendedData = user.likes_recommended_data
                         friendsListData = user.likes_friendslist_data
-                    
+
                     if userCategoryData and friendCategoryData and recommendedData and friendsListData:
                         me = ast.literal_eval(user.me_data)
                         myData = ast.literal_eval(userCategoryData)
@@ -198,6 +200,8 @@ def index(request, category='likes'):
                         friendsList = ast.literal_eval(friendsListData)
                         haveCategory = (len(myData['data']) > 0)
                         hasRecommended = (len(recommendedList) > 0)
+                    else:
+                        do_api_search = True
                 except:
                     do_api_search = True
             else:
