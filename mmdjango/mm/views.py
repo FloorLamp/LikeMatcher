@@ -133,11 +133,7 @@ def index(request, category='music'):
         # Only do facebook api search if user refreshes or there is no data in database
         do_api_search = request.POST.get('refresh', False)
         
-        me = {}
-        friendsData = {}
-        myData = {}
-        recommendedList = []
-        friendsList = []
+        me, friendsData, myData, recommendedList, friendsList = {}, {}, {}, [], []
         haveCategory, hasRecommended = False, False
         
         if not do_api_search:
@@ -211,21 +207,20 @@ def index(request, category='music'):
             me = fb_call('me', args={'access_token': access_token})
             if not me:
                 return redirect(get_home(request))
-            friendsData = fb_call('me/friends', args={'fields': 'name,picture,'+category, 'access_token': access_token})        
-            myData = fb_call('me/'+category, args={'access_token': access_token})
+            friendsData = fb_call('me/friends', args={'fields': 'name,picture,%s' % category, 'access_token': access_token})        
+            myData = fb_call('me/%s' % category, args={'access_token': access_token})
 
             # Save cookie
             request.session[COOKIE_FBID] = me['id']
         
-            myThings = {} # List of my things
+            myThings = {} # Dict of my things: {name: id}
             recommended = {} # Dict of recommended category: {thing name: [rating, id]}
             friends = {} # Dict of friends: {friend id: [name, picture, common things]}
         
             # Gets my list of things if I have any
             if myData.has_key('data') and len(myData['data']) > 0:
                 haveCategory = True
-                for m in myData['data']:
-                    myThings[m['name']] = m['id']
+                myThings = dict([(x['name'], x['id']) for x in myData['data']])
             
             if friendsData.has_key('data'):
                 for f in friendsData['data']:
@@ -237,9 +232,7 @@ def index(request, category='music'):
                         continue
                     
                     # Gets list of friend things
-                    friendThings = {}
-                    for m in f[category]['data']:
-                        friendThings[m['name']] = m['id']
+                    friendThings = dict([(x['name'], x['id']) for x in f[category]['data']])
                         
                     # Finds common things between me and friend
                     # Sets weight to 1 if I have no things, or to the number of things we have in common
@@ -265,12 +258,10 @@ def index(request, category='music'):
                 recommended = dict(sorted(recommended.iteritems(), key=lambda x: x[1][0], reverse=True)[0:200])
                 
                 # Construct query of all recommended things
-                recommendedCategoryQuery = ''
-                for m in recommended:
-                    recommendedCategoryQuery += recommended[m][1] + ','
+                recommendedCategoryQuery = ','.join(v[1] for k, v in recommended.items())
                 
                 # Add picture and link to recommended things
-                categoryData = fb_call('?ids=' + recommendedCategoryQuery[:-1], args={'fields': 'name, picture, link', 'access_token': access_token})
+                categoryData = fb_call('', args={'ids': recommendedCategoryQuery, 'fields': 'name, picture, link', 'access_token': access_token})
                 for m in categoryData:
                     recommended[categoryData[m]['name']].extend(
                     [categoryData[m]['picture'] if categoryData[m].has_key('picture') else question_mark_picture, categoryData[m]['link']])
@@ -338,10 +329,15 @@ def index(request, category='music'):
 def api(request):
     access_token = request.session.get(COOKIE_TOKEN, None)
     user_id = request.session.get(COOKIE_FBID, None)
-    user = FBUser.objects.get(pk=user_id)
     searchThing = request.GET.get('q', None)
     category = request.GET.get('c', 'likes')
-    if request.method == 'GET' and searchThing and user_id and user:# and request.is_ajax():
+    results = {}
+    try:
+        user = FBUser.objects.get(pk=user_id)
+    except:
+        return HttpResponse(json.dumps(results), mimetype='application/json')
+        
+    if request.method == 'GET' and searchThing and user_id and user:
         # Get friend data from database
         friendCategoryData = None
         if category == 'music':
@@ -363,16 +359,14 @@ def api(request):
             
         friendsData = ast.literal_eval(friendCategoryData)
         
-        results = {}
         for f in friendsData['data']:
             # Skip empty category data
             if not f.get(category):
                 continue
             
             # Gets list of friend things
-            friendThings = {}
-            for m in f[category]['data']:
-                friendThings[m['name']] = m['id']
+            friendThings = dict([(x['name'], x['id']) for x in f[category]['data']])
+                
             # Searches friends things for thing and adds to results
             if friendThings.has_key(searchThing):
                 del friendThings[searchThing]
@@ -386,12 +380,10 @@ def api(request):
         results = dict(sorted(results.iteritems(), key=lambda x: x[1][0], reverse=True)[0:100])
         
         # Construct query of all resulting things
-        categoryQuery = ''
-        for m in results:
-            categoryQuery += results[m][1] + ','
+        categoryQuery = ','.join(v[1] for k, v in results.items())
         
         # Add picture and link to resulting things
-        categoryData = fb_call('?ids=' + categoryQuery[:-1], args={'fields': 'name, picture, link', 'access_token': access_token})
+        categoryData = fb_call('', args={'ids': categoryQuery, 'fields': 'name, picture, link', 'access_token': access_token})
         for m in categoryData:
             if results.has_key(categoryData[m]['name']):
                 results[categoryData[m]['name']].extend(
