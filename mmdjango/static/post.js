@@ -31,7 +31,7 @@ $(function(){
     $('p#noScript').hide();
 });
     
-/// SINGLE ARTIST SEARCH
+/// SINGLE PAGE SEARCH
 $(function(){
     var typingTimer,
         doneTypingTime = 800, 
@@ -41,7 +41,7 @@ $(function(){
         resultsDiv = $('div#artistSearchResults'),
         resultsList = $('ul#resultsList'),
         refreshLink = $('input#refreshDataLink'),
-        refreshTitle = 'Re-search facebook for music data',
+        refreshTitle = 'Re-search facebook for ' + category + ' data',
         recommendHeader = $('h1#recommended'),
         recommendedList = $('ul#recommendedList');
         
@@ -53,15 +53,15 @@ $(function(){
             recommendedList.delay(SLIDE_TIME).slideDown(SLIDE_TIME);
             resultsDiv.hide();
             refreshLink.val('Refresh').attr('title', refreshTitle);
-            recommendHeader.text('Recommended music');
+            recommendHeader.text('Recommended something');
         }
     });
         
     function getSearchDataSingle() {
-        doSearch(searchText.val(), resultsDiv, 'find', searchArtistFunction);
+        doSearch(searchText.val(), resultsDiv, 'find', searchFunction);
         
         // Select result and finds similar
-        function searchArtistFunction() {
+        function searchFunction() {
             var selected = $(this),
                 name = selected.attr('title');
             selected.siblings().removeClass('resultSelected').addClass('result');
@@ -70,7 +70,7 @@ $(function(){
     //        data.name = selected.data('name');
     //        data.link = selected.data('link');
             if (searchText.val) {
-                var relatedArtists = $.ajax({
+                var related = $.ajax({
                     url: '/api',
                     dataType: 'json',
                     data: { 
@@ -79,7 +79,7 @@ $(function(){
                     }
                 });
                 
-                relatedArtists.then(function(response) {
+                related.then(function(response) {
                     resultsList.html('');
                     
                     if (response.length > 0) {
@@ -133,7 +133,7 @@ $(function(){
             searchDiv = button.parents('div.friendBox').siblings('div.search'),
             resultsDiv = searchDiv.siblings('div.results');
         
-        if (button.val() == 'Recommend music') {
+        if (button.val() == 'Recommend something') {
             button.val('Cancel');
             
             // Add search form if it doesn't exist
@@ -185,7 +185,7 @@ $(function(){
             
         // If cancelling, hide search form
         } else {
-            button.val('Recommend music');
+            button.val('Recommend something');
             searchDiv.hide();
             resultsDiv.hide();
         }

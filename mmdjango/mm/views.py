@@ -21,7 +21,16 @@ FB_APP_NAME = json.loads(requests.get(app_url).content).get('name')
 COOKIE_TOKEN = 'fbapp' + FB_APP_ID + 'token'
 COOKIE_FBID = 'fbapp' + FB_APP_ID + 'fbid'
 question_mark_picture = 'http://local2social.com/wp-content/uploads/2011/02/questionmark.jpg'
-categoryList = [('All Likes', 'likes'), ('Music', 'music'), ('Movies', 'movies'), ('TV', 'tv'), ('Books', 'books'), ('Games', 'games'), ('Interests', 'interests'), ('Activities', 'activities')]
+
+# list of categories: [(display name, category name, url)]
+categoryList = [('All Likes', 'likes', '/'), 
+                ('Music', 'music', 'music'), 
+                ('Movies', 'movies', 'movies'), 
+                ('TV', 'television', 'tv'), 
+                ('Books', 'books', 'books'), 
+                ('Games', 'games', 'games'), 
+                ('Interests', 'interests', 'interests'), 
+                ('Activities', 'activities', 'activities')]
 
 def oauth_login_url(request):
     fb_login_uri = ("https://www.facebook.com/dialog/oauth"
@@ -132,13 +141,14 @@ def index(request, category='likes'):
         if not do_api_search:
             user_id = request.session.get(COOKIE_FBID, None)
             if user_id:
-                user = FBUser.objects.filter(pk=user_id)[0]
-                if user:
-                    # Gets corresponding category data from database
+                try:
+                    # Get category data from database
+                    user = FBUser.objects.get(pk=user_id)
                     userCategoryData = None
                     friendCategoryData = None
                     recommendedData = None
                     friendsListData = None
+                    
                     if category == 'music':
                         userCategoryData = user.music_data
                         friendCategoryData = user.music_friend_data
@@ -188,9 +198,7 @@ def index(request, category='likes'):
                         friendsList = ast.literal_eval(friendsListData)
                         haveCategory = (len(myData['data']) > 0)
                         hasRecommended = (len(recommendedList) > 0)
-                    else:
-                        do_api_search = True
-                else:
+                except:
                     do_api_search = True
             else:
                 do_api_search = True
@@ -318,7 +326,7 @@ def index(request, category='likes'):
             user.save()
 
         return render_to_response('index.html', 
-        {'app_id': FB_APP_ID, 'token': access_token, 'url': get_home(request), 'categoryList': categoryList, 'category': category, 'friendsList': friendsList, 'recommendedList': recommendedList[0:100], 'haveCategory': haveCategory, 'hasRecommended': hasRecommended, 'me': me, 'name': FB_APP_NAME})
+        {'app_id': FB_APP_ID, 'name': FB_APP_NAME, 'categoryList': categoryList, 'category': category, 'friendsList': friendsList, 'recommendedList': recommendedList[0:100], 'haveCategory': haveCategory, 'hasRecommended': hasRecommended})
     else:
         return redirect(oauth_login_url(request))
 
@@ -336,7 +344,7 @@ def api(request):
             friendCategoryData = user.music_friend_data
         elif category == 'movies':
             friendCategoryData = user.movies_friend_data
-        elif category == 'tv':
+        elif category == 'television':
             friendCategoryData = user.tv_friend_data
         elif category == 'books':
             friendCategoryData = user.books_friend_data
