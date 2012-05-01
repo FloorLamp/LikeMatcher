@@ -26,12 +26,6 @@ function doSearch(toSearch, resultsDiv, type, onclickFunction) {
         $('div.'+type).on('click', onclickFunction);
     });
 }
-
-/// MISC
-$(function(){
-    // Show noscript message
-    $('p#noScript').hide();
-});
     
 /// SINGLE PAGE SEARCH
 $(function(){
