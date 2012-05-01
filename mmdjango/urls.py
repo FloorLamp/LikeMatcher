@@ -16,7 +16,16 @@ urlpatterns = patterns('',
     # Uncomment the next line to enable the admin:
     url(r'^admin/', include(admin.site.urls)),
 	url(r'^$', 'mm.views.index'),
+	url(r'^music$', 'mm.views.music'),
+	url(r'^movies$', 'mm.views.movies'),
+	url(r'^tv$', 'mm.views.tv'),
+	url(r'^games$', 'mm.views.games'),
+	url(r'^books$', 'mm.views.books'),
+	url(r'^interests$', 'mm.views.interests'),
+	url(r'^activities$', 'mm.views.activities'),
+	
 	url(r'^getcode$', 'mm.views.get_code'),
+	
 	url(r'^api$', 'mm.views.api'),
 	url(r'^(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.STATIC_DIR}),
 )

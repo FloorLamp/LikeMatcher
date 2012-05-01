@@ -15,7 +15,7 @@ function doSearch(toSearch, resultsDiv, type, onclickFunction) {
         resultsDiv.html('').show().css('border', '1px solid black');
         $.each(response.data, function(k, v) {
             resultsDiv.append(
-                '<div class="result ' + type + '" data-name="' + v.name + '" data-link="' + v.link + '">' + 
+                '<div class="result ' + type + '" title="' + v.name + '" data-link="' + v.link + '">' + 
                     '<img class="resultImg" src="' + v.picture + '"></img>' +
                     '<div class="resultText"><b>' + v.name + '</b><br>' + 
                     '' + v.category + '<br>' +
@@ -37,7 +37,7 @@ $(function(){
         doneTypingTime = 800, 
         SLIDE_TIME = 800,
         searchText = $('input#artistSearchText'),
-        data = null,
+        category = $('h1#recommended').data('category'),
         resultsDiv = $('div#artistSearchResults'),
         resultsList = $('ul#resultsList'),
         refreshLink = $('input#refreshDataLink'),
@@ -63,7 +63,7 @@ $(function(){
         // Select result and finds similar
         function searchArtistFunction() {
             var selected = $(this),
-                name = selected.data('name');
+                name = selected.attr('title');
             selected.siblings().removeClass('resultSelected').addClass('result');
             selected.addClass('resultSelected');
     //        data.picture = selected.children('img.resultImg').attr('src');
@@ -73,7 +73,10 @@ $(function(){
                 var relatedArtists = $.ajax({
                     url: '/api',
                     dataType: 'json',
-                    data: { q: name }
+                    data: { 
+                        q: name,
+                        c: category,
+                    }
                 });
                 
                 relatedArtists.then(function(response) {
@@ -98,7 +101,7 @@ $(function(){
                         resultsList.append(
                             '<li>' +
                                 '<p class="noResults">' +
-                                    '<b>' + name + '</b> was not found in your friends music.' +
+                                    '<b>' + name + '</b> was not found in your friends ' + category + '.' +
                                 '</p>' +
                             '</li>'
                         );

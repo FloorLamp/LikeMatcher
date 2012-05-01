@@ -1,3 +1,4 @@
+/* All */
 body {
 	font-family: sans-serif;
 }
@@ -7,13 +8,51 @@ body {
 .link {
     color: #3B5998;
 }
+ul {
+	margin: 0px;
+	padding: 0px;
+	list-style-type: none;
+}
+ul li {
+	margin: 0px;
+	padding: 0px;
+}
+
+/* Header and nav */
 h1#welcome {
+    clear: both;
     margin: 10px 0 10px;
-    font-size: 1.5em;
+    font-size: 1em;
 }
-div#recommendedList {
-    margin: 10px;
+div.header {
+    clear: both;
+    font-size: 0.9em;
 }
+div.nav {
+    margin: 5px 0 10px;
+    overflow: auto;
+    width: 100%;
+    background-color: #6d84b4;
+}
+div.category {
+    width: 85px;
+    float: left;
+    padding: 11px 5px;
+    text-align: center;
+    color: #fff;
+    font-size: 0.9em;
+}
+div.selectedCategory {
+    background-color: #4967a4;
+    font-weight: bold;
+}
+div.category:hover {
+    background-color: #4967a4;
+/*    background-color: #d3d3ff;*/
+/*    color: #3B5998;*/
+}
+
+/* Recommended */
 div.main {
 	width: 50%;
 	float: left;
@@ -24,14 +63,8 @@ h1#recommended {
 	font-size: 1.3em;
 	display: inline;
 }
-ul {
-	margin: 0px;
-	padding: 0px;
-	list-style-type: none;
-}
-ul li {
-	margin: 0px;
-	padding: 0px;
+div#recommendedList {
+    margin: 10px;
 }
 form#refreshForm {
     display: inline
@@ -71,6 +104,7 @@ div.artistName {
 /* Friends */
 div.friends {
     float: right;
+    clear: right;
     width: 50%;
 }
 div.friendBox {
@@ -142,7 +176,7 @@ input.searchText {
     width: 266px;
 }
 input.searchButton {
-    background-color: #FFFFFF;
+    background-color: #fff;
     background-image: url("https://s-static.ak.fbcdn.net/rsrc.php/v1/ys/r/0VDksn8o5BR.png");
     background-position: -274px -502px;
     background-repeat: no-repeat;
@@ -153,7 +187,7 @@ input.searchButton {
     width: 22px;
 }
 input.button {
-    background-color: #DDDDDD;
+    background-color: #ddd;
     border: 1px solid;
     font-size: 0.8em;
     height: 23px;
@@ -173,11 +207,11 @@ div.result {
 }
 div.result:hover {
     background-color: #6d84b4;
-    color: #ffffff;
+    color: #fff;
 }
 div.resultSelected {
     background-color: #4967a4;
-    color: #ffffff;
+    color: #fff;
 }
 img.resultImg {
 	float: left;
