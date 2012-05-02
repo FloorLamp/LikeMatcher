@@ -19,11 +19,6 @@ ul li {
 }
 
 /* Header and nav */
-h1#welcome {
-    clear: both;
-    margin: 10px 0 10px;
-    font-size: 1em;
-}
 div.header {
     clear: both;
     font-size: 0.9em;
@@ -35,7 +30,7 @@ div.nav {
     background-color: #6d84b4;
 }
 div.category {
-    width: 85px;
+    width: 82px;
     float: left;
     padding: 11px 5px;
     text-align: center;
@@ -58,7 +53,7 @@ div.main {
 h1#recommended {
 	margin: 10px 10px 10px 0;
 	padding: 0px;
-	font-size: 1.3em;
+	font-size: 1.1em;
 	display: inline;
 }
 div#recommendedList {
@@ -72,7 +67,11 @@ input#refreshDataLink {
     text-decoration: underline;
     border: 0 none;
     cursor: pointer;
-    margin: 10px 5px;
+    float: right;
+    margin: 3px 30px 0 0;
+}
+ul.boxes {
+    margin-top: 5px;
 }
 div.artistBox {
 	float: left;
@@ -113,8 +112,8 @@ div.friendBox {
     clear: both;
 }
 h1.friendsTitle {
-	font-size: 1.3em;
-	margin: 10px 0;
+	font-size: 1.1em;
+	margin: 10px 0 2px;
 }
 img.friendPic {
 	float: left;

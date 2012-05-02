@@ -28,7 +28,7 @@
         <input type="submit" name="refresh" value="Refresh" id="refreshDataLink" class="link" title="Re-search facebook for {{category}}"></input>
     </form>
     {% if hasRecommended %}
-    <ul id="recommendedList">
+    <ul id="recommendedList" class="boxes">
         {% for artist in recommendedList %}
         <li>
             <div class="artistBox">
@@ -52,7 +52,7 @@
         </ul>
     </p>
     {% endif %}
-    <ul id="resultsList"></ul>
+    <ul id="resultsList" class="boxes"></ul>
 </div>
 
 <div class="artistSearch">

@@ -13,15 +13,14 @@ import json
 FB_APP_ID = '274847765934546'
 FB_APP_SECRET = '888949406beb1a60ce62963d679678f9'
 FB_API_SCOPE = 'user_likes+friends_likes+user_interests+friends_interests+user_activities+friends_activities+publish_stream'
-SECRET_CODE = None
-requests = requests.session()
-
-app_url = 'https://graph.facebook.com/{0}'.format(FB_APP_ID)
-FB_APP_NAME = json.loads(requests.get(app_url).content).get('name')
+FB_APP_URL = 'https://graph.facebook.com/{0}'.format(FB_APP_ID)
+FB_APP_NAME = json.loads(requests.get(FB_APP_URL).content).get('name')
 COOKIE_TOKEN = 'fbapp' + FB_APP_ID + 'token'
 COOKIE_FBID = 'fbapp' + FB_APP_ID + 'fbid'
-question_mark_picture = 'http://local2social.com/wp-content/uploads/2011/02/questionmark.jpg'
 
+requests = requests.session()
+question_mark_picture = 'http://local2social.com/wp-content/uploads/2011/02/questionmark.jpg' # For pages without a picture
+RESULTS_TO_DISPLAY = 99
 # list of categories: [(display name, category name, url)]
 categoryList = [('Music', 'music', 'music'), 
                 ('Movies', 'movies', 'movies'), 
@@ -31,12 +30,11 @@ categoryList = [('Music', 'music', 'music'),
                 ('Interests', 'interests', 'interests'), 
                 ('Activities', 'activities', 'activities'),
                 ('All Likes', 'likes', 'likes')]
-
+                
 def oauth_login_url(request):
     fb_login_uri = ("https://www.facebook.com/dialog/oauth"
                     "?client_id=%s&redirect_uri=%s&scope=%s" %
                     (FB_APP_ID, get_code_url(request), FB_API_SCOPE))
-
     return fb_login_uri
 
 def simple_dict_serialisation(params):
@@ -78,8 +76,7 @@ def fbapi_auth(code, request):
 def fbapi_get_application_access_token(id):
     token = fbapi_get_string(
         path=u"/oauth/access_token",
-        params=dict(grant_type=u'client_credentials', client_id=id,
-                    client_secret=app.config['FB_APP_SECRET']),
+        params=dict(grant_type=u'client_credentials', client_id=id, client_secret=app.config['FB_APP_SECRET']),
         domain=u'graph')
 
     token = token.split('=')[-1]
@@ -142,10 +139,7 @@ def index(request, category='music'):
                 try:
                     # Get category data from database
                     user = FBUser.objects.get(pk=user_id)
-                    userCategoryData = None
-                    friendCategoryData = None
-                    recommendedData = None
-                    friendsListData = None
+                    userCategoryData, friendCategoryData, recommendedData, friendsListData = None, None, None, None
                     
                     if category == 'music':
                         userCategoryData = user.music_data
@@ -272,7 +266,7 @@ def index(request, category='music'):
                         recommended[x].extend([question_mark_picture, ''])
                     
                 # Sort recommended thing list by rating
-                recommendedList = sorted(recommended.iteritems(), key=lambda x: x[1][0], reverse=True)
+                recommendedList = sorted(recommended.iteritems(), key=lambda x: x[1][0], reverse=True)[0:RESULTS_TO_DISPLAY+1]
                 friendsList = sorted(friends.iteritems(), key=lambda x: x[1][2], reverse=True)
             
             # Save to database
@@ -321,7 +315,7 @@ def index(request, category='music'):
             user.save()
 
         return render_to_response('index.html', 
-        {'app_id': FB_APP_ID, 'name': FB_APP_NAME, 'categoryList': categoryList, 'category': category, 'friendsList': friendsList, 'recommendedList': recommendedList[0:100], 'haveCategory': haveCategory, 'hasRecommended': hasRecommended})
+        {'app_id': FB_APP_ID, 'name': FB_APP_NAME, 'categoryList': categoryList, 'category': category, 'friendsList': friendsList, 'recommendedList': recommendedList, 'haveCategory': haveCategory, 'hasRecommended': hasRecommended})
     else:
         return redirect(oauth_login_url(request))
 
@@ -377,7 +371,7 @@ def api(request):
             return HttpResponse(json.dumps(results), mimetype='application/json')
             
         # Limit results to top 100
-        results = dict(sorted(results.iteritems(), key=lambda x: x[1][0], reverse=True)[0:100])
+        results = dict(sorted(results.iteritems(), key=lambda x: x[1][0], reverse=True)[0:RESULTS_TO_DISPLAY+1])
         
         # Construct query of all resulting things
         categoryQuery = ','.join(v[1] for k, v in results.items())
